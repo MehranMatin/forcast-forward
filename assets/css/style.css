@@ -9,6 +9,10 @@ header {
     background-color: blue;
 }
 
+main {
+    display: flex;
+}
+
 nav {
     padding: 10px;
     width: 20%;
@@ -19,4 +23,21 @@ nav button {
     display: block;
     width: 100%;
     box-sizing: border-box;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+nav > button {
+    background-color: aqua;
+}
+
+nav div {
+    border-top: 1px solid black;
+    margin: 15px 0;
+    padding-top: 5px;
+}
+
+nav div button {
+    background-color: lightgrey;
 }
