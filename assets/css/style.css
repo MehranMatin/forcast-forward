@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+}
+
+header {
+    padding: 5px 0;
+    color: white;
+    text-align: center;
+    background-color: blue;
+}
+
+nav {
+    padding: 10px;
+    width: 200px;
+}
+
+nav input,
+nav button {
+    display: block;
+    width: 100%;
+}
