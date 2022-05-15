@@ -11,11 +11,12 @@ header {
 
 nav {
     padding: 10px;
-    width: 200px;
+    width: 20%;
 }
 
 nav input,
 nav button {
     display: block;
     width: 100%;
+    box-sizing: border-box;
 }
