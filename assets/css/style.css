@@ -41,3 +41,26 @@ nav div {
 nav div button {
     background-color: lightgrey;
 }
+
+.low {
+    color: white;
+    background-color: green;
+}
+
+.moderate {
+    background-color: yellow;
+}
+
+.high {
+    background-color: orange;
+}
+
+.veryhigh {
+    color: white;
+    background-color: red;
+}
+
+.extreme {
+    color: white;
+    background-color: purple;
+}
