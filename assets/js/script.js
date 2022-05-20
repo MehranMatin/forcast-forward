@@ -1,55 +1,20 @@
+/* SETTINGS ********************************************************/
 const apiKey = '88b944ca4dbc06132a8237b582984434';
-
 const daysForcast = 5;
 
-function getCityData() {
-    let cities = localStorage.getItem('cities');
 
-    if (cities) {
-        // into an array of objects
-        cities = JSON.parse(cities);
-    } else {
-        // nothing in local storage
-        cities = [];
-    }
 
-    return cities;
-}
-
-function getSavedCities() {
-    const cities = getCityData();
-    const btnPlaceholder = document.querySelector('nav div');
-    let html = '';
-
-    for (let {name, lat, lon} of cities) {
-        html += `<button data-lat='${lat}' data-lon='${lon}'>${name}</button>`;
-    }
-
-    btnPlaceholder.innerHTML = html;
-    for (let button of btnPlaceholder.querySelectorAll('button')) {
-        button.addEventListener('click', handleSavedSearch);
-    }
-}
-
-function saveCity(name, lat, lon) {
-    const cities = getCityData();
-
-    // make sure not already added to local
-    // if we do not find that city then argument is true, add it
-    if (!cities.find(c => c.name === name)) {
-        cities.push({name, lat, lon});
-
-        // turn obj back into string then write to local storage
-        localStorage.setItem('cities', JSON.stringify(cities));
-        getSavedCities();
-    }
-}
+/* INIT ********************************************************/
 
 function init() {
     document.querySelector('nav > button').addEventListener('click', handleSearch);
     getSavedCities();
 }
 init();
+
+
+
+/* EVENT HANDLERS ********************************************************/
 
 async function handleSearch () {
     // take user input and remove extra whitespace
@@ -73,6 +38,34 @@ async function handleSavedSearch(e) {
     const data = await getWeather(lat, lon);
     displayWeather(name, data);
 }
+
+
+
+/* API CALLS ********************************************************/
+
+// converting city name to lat/lon
+async function getLatLon (city) {
+    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const name = data[0].name;
+    const lat = data[0].lat;
+    const lon = data[0].lon;
+    // returning an object using literals
+    return {name, lat, lon};
+}
+
+// get weather using latitude and longitude
+async function getWeather (lat, lon) {
+    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+}
+
+
+
+/* DOM RENDERING ********************************************************/
 
 // display weather
 function displayWeather (name, data) {
@@ -123,22 +116,49 @@ function displayWeather (name, data) {
     document.querySelector('section').innerHTML = html;
 }
 
-// converting city name to lat/lon
-async function getLatLon (city) {
-    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const name = data[0].name;
-    const lat = data[0].lat;
-    const lon = data[0].lon;
-    // returning an object using literals
-    return {name, lat, lon};
+function getSavedCities() {
+    const cities = getCityData();
+    const btnPlaceholder = document.querySelector('nav div');
+    let html = '';
+
+    for (let {name, lat, lon} of cities) {
+        html += `<button data-lat='${lat}' data-lon='${lon}'>${name}</button>`;
+    }
+
+    btnPlaceholder.innerHTML = html;
+    for (let button of btnPlaceholder.querySelectorAll('button')) {
+        button.addEventListener('click', handleSavedSearch);
+    }
 }
 
-// get weather using latitude and longitude
-async function getWeather (lat, lon) {
-    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
+
+
+/* DATA ********************************************************/
+
+function saveCity(name, lat, lon) {
+    const cities = getCityData();
+
+    // make sure not already added to local
+    // if we do not find that city then argument is true, add it
+    if (!cities.find(c => c.name === name)) {
+        cities.push({name, lat, lon});
+
+        // turn obj back into string then write to local storage
+        localStorage.setItem('cities', JSON.stringify(cities));
+        getSavedCities();
+    }
+}
+
+function getCityData() {
+    let cities = localStorage.getItem('cities');
+
+    if (cities) {
+        // into an array of objects
+        cities = JSON.parse(cities);
+    } else {
+        // nothing in local storage
+        cities = [];
+    }
+
+    return cities;
 }
