@@ -2,8 +2,52 @@ const apiKey = '88b944ca4dbc06132a8237b582984434';
 
 const daysForcast = 5;
 
+function getCityData() {
+    let cities = localStorage.getItem('cities');
+
+    if (cities) {
+        // into an array of objects
+        cities = JSON.parse(cities);
+    } else {
+        // nothing in local storage
+        cities = [];
+    }
+
+    return cities;
+}
+
+function getSavedCities() {
+    const cities = getCityData();
+    const btnPlaceholder = document.querySelector('nav div');
+    let html = '';
+
+    for (let {name, lat, lon} of cities) {
+        html += `<button data-lat='${lat}' data-lon='${lon}'>${name}</button>`;
+    }
+
+    btnPlaceholder.innerHTML = html;
+    for (let button of btnPlaceholder.querySelectorAll('button')) {
+        button.addEventListener('click', handleSavedSearch);
+    }
+}
+
+function saveCity(name, lat, lon) {
+    const cities = getCityData();
+
+    // make sure not already added to local
+    // if we do not find that city then argument is true, add it
+    if (!cities.find(c => c.name === name)) {
+        cities.push({name, lat, lon});
+
+        // turn obj back into string then write to local storage
+        localStorage.setItem('cities', JSON.stringify(cities));
+        getSavedCities();
+    }
+}
+
 function init() {
     document.querySelector('nav > button').addEventListener('click', handleSearch);
+    getSavedCities();
 }
 init();
 
@@ -15,6 +59,17 @@ async function handleSearch () {
     if (!city) return;
 
     const {name, lat, lon} = await getLatLon(city);
+    const data = await getWeather(lat, lon);
+    displayWeather(name, data);
+
+    saveCity(name, lat, lon);
+}
+
+async function handleSavedSearch(e) {
+    const button = e.target;
+    const name = button.textContent;
+    const {lat, lon} = button.dataset;
+
     const data = await getWeather(lat, lon);
     displayWeather(name, data);
 }
