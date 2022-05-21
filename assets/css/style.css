@@ -42,6 +42,7 @@ nav div button {
     background-color: lightgrey;
 }
 
+/* Color Guage */
 .low {
     color: white;
     background-color: green;
@@ -63,4 +64,23 @@ nav div button {
 .extreme {
     color: white;
     background-color: purple;
+}
+
+/* forcast */
+ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 0 5px;
+    padding: 5px;
+    background-color: lightgray;
+    border-radius: 15px;
+    text-align: center;
+}
+
+img {
+    vertical-align: middle;
 }
